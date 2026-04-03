@@ -122,7 +122,7 @@ export default function Contact() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: form.full_name,   // ✅ FIXED
+            full_name: form.full_name,   // ✅ FIXED
             email: form.email,
             message: form.message,
           }),
