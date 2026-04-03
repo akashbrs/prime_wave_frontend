@@ -5,6 +5,8 @@ import vastrraCoat from "../assets/vastrra_coat.png";
 import womanBlueDress from "../assets/woman_blue_dress.png";
 import electronDevices from "../assets/electron_devices.png";
 import electronCardBanner from "../assets/electron_card_banner.png";
+import fashionLogo from "../assets/Homescreenfashionlogo.png";
+import electroLogo from "../assets/homescreenelectrologo.png";
 
 function TickerBar() {
   const { theme } = useTheme();
@@ -37,12 +39,13 @@ function TickerBar() {
 const INDUSTRIES = [
   {
     id: "fashion",
-    name: "E-Commerce of Fashion (Vastrra)",
+    name: "E-Commerce of Fashion (VELOURA)",
     shortName: "Fashion",
     subtitle: "Fashion & Apparel",
     icon: "🛍",
+    logo: fashionLogo,
     color: "#00e676",
-    url: "https://vastrra.com",
+    url: "https://veloura-frontend.vercel.app",
     desc: "A stylish and high-converting e-commerce storefront for the Vastrra fashion brand.",
     bullets: ["Latest Fashion Trends", "Exclusive Collections", "Premium Quality Apparel"],
     footerLabel: "◆ VASTRRA FASHION",
@@ -53,10 +56,11 @@ const INDUSTRIES = [
   },
   {
     id: "electronics",
-    name: "E-Commerce of Electronics (Electron)",
+    name: "E-Commerce of Electronics (ELECTRON)",
     shortName: "Electron",
     subtitle: "Electronics & Gadgets",
     icon: "⚡",
+    logo: electroLogo,
     color: "#4fc3f7",
     url: "https://electronics-frontend-zeta.vercel.app/",
     desc: "A robust digital storefront for consumer electronics.",
@@ -221,6 +225,19 @@ export default function Industries() {
                             maxWidth: "75%",
                             paddingRight: 10
                           }}>
+                            {ind.logo && (
+                              <img
+                                src={ind.logo}
+                                alt={`${ind.shortName} Logo`}
+                                style={{
+                                  height: 48,
+                                  marginBottom: 16,
+                                  objectFit: "contain",
+                                  filter: "none",
+                                  display: "block"
+                                }}
+                              />
+                            )}
                             <div style={{
                               fontSize: "clamp(1.4rem, 5vw, 2rem)",
                               fontWeight: 800,
@@ -290,9 +307,23 @@ export default function Industries() {
                                 border: isDark ? `1px solid ${borderCol}50` : "none",
                                 display: "flex", justifyContent: "center", alignItems: "center",
                                 color: borderCol,
-                                boxShadow: isDark ? `0 0 20px ${borderCol}30` : `0 8px 16px ${borderCol}40`
+                                boxShadow: isDark ? `0 0 20px ${borderCol}30` : `0 8px 16px ${borderCol}40`,
+                                overflow: "hidden"
                               }}>
-                                <span style={{ fontSize: "1.6rem" }}>{ind.icon}</span>
+                                {ind.logo ? (
+                                  <img
+                                    src={ind.logo}
+                                    alt={`${ind.shortName} Logo`}
+                                    style={{
+                                      width: "80%",
+                                      height: "80%",
+                                      objectFit: "contain",
+                                      filter: "none"
+                                    }}
+                                  />
+                                ) : (
+                                  <span style={{ fontSize: "1.6rem" }}>{ind.icon}</span>
+                                )}
                               </div>
                               <div>
                                 <div style={{ fontSize: "1.5rem", fontWeight: 700, color: t.text, marginBottom: 4, letterSpacing: "-0.01em" }}>{ind.name}</div>

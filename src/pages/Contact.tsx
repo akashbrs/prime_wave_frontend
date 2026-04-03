@@ -1,6 +1,7 @@
 import { useTheme, themes as tokens } from "../context/ThemeContext";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { supabase } from "../supabaseClient";
 
 // ─── Ticker bar (shared pattern across pages) ─────────────────────────────────
 function TickerBar() {
@@ -89,7 +90,7 @@ export default function Contact() {
   const { theme } = useTheme();
   const t = tokens[theme];
 
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [serverMessage, setServerMessage] = useState<string>("");
 
@@ -97,29 +98,47 @@ export default function Contact() {
     e.preventDefault();
     setStatus("loading");
     setServerMessage("");
+
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
-      const res = await fetch(`${apiBaseUrl}/api/contact`, {
+      // 1. Save to Supabase (Database record)
+      console.log("Saving to Supabase...");
+      const { error: dbError } = await supabase
+        .from("contacts")
+        .insert([{
+          full_name: form.full_name,
+          email: form.email,
+          message: form.message
+        }]);
+
+      if (dbError) throw new Error(`Database Error: ${dbError.message}`);
+
+      // 2. Trigger Confirmation Email via Django Backend
+      console.log("Sending confirmation email...");
+      const apiBaseUrl = "http://127.0.0.1:8005"; // Hardcoded for debugging
+      const emailRes = await fetch(`${apiBaseUrl}/api/contact/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });
-      const data = await res.json().catch(() => ({} as any));
-      if (res.ok && (data?.success ?? true)) {
-        setStatus("success");
-        setServerMessage(data?.message || "Message sent.");
-        setForm({ name: "", email: "", message: "" });
-        setTimeout(() => setStatus("idle"), 3000);
+
+      if (!emailRes.ok) {
+        const errorData = await emailRes.json().catch(() => ({}));
+        throw new Error(errorData.error || "Django server returned an error.");
       } else {
-        setStatus("error");
-        setServerMessage(data?.error || data?.message || "Failed to send message.");
-        setTimeout(() => setStatus("idle"), 3000);
+        setServerMessage("Message saved and confirmation email sent!");
       }
-    } catch (err) {
-      console.error(err);
+
+      setStatus("success");
+      setForm({ full_name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 5000);
+
+    } catch (err: any) {
+      console.error("Error:", err);
+      // This will show us the EXACT error in your browser popup
+      alert(`Submission Error: ${err.message}`);
       setStatus("error");
-      setServerMessage("Network/server error while sending message.");
-      setTimeout(() => setStatus("idle"), 3000);
+      setServerMessage(err.message || "Failed to process inquiry.");
+      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
@@ -395,7 +414,7 @@ export default function Contact() {
                 lineHeight: 1.75,
               }}
             >
-              Fill out the form below. A confirmation will be sent directly to your email via our Google SMTP server.
+              Fill out the form below. Your application/message will be securely stored in our cloud database for immediate review by our engineering leads.
             </p>
 
             <motion.form
@@ -420,8 +439,8 @@ export default function Contact() {
                 <input
                   type="text"
                   required
-                  value={form.name}
-                  onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+                  value={form.full_name}
+                  onChange={(e) => setForm(f => ({ ...f, full_name: e.target.value }))}
                   placeholder="John Doe"
                   style={{
                     padding: "12px 16px",
@@ -517,7 +536,7 @@ export default function Contact() {
 
               {status === "error" && (
                 <div style={{ color: "#ef5350", fontSize: "0.85rem", marginTop: 4 }}>
-                  {serverMessage || "Ensure the SMTP server is running and configured with App Passwords."}
+                  {serverMessage || "Ensure the database connection is active and credentials are correct."}
                 </div>
               )}
               {status === "success" && serverMessage && (

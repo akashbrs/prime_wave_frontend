@@ -3,6 +3,8 @@ import { useTheme, themes } from "../context/ThemeContext";
 import Hero from "../components/Hero";
 import type { Page } from "../components/Navbar";
 import { motion } from "framer-motion";
+import fashionLogo from "../assets/Homescreenfashionlogo.png";
+import electroLogo from "../assets/homescreenelectrologo.png";
 
 interface HomeProps {
   navigate: (p: Page, hash?: string) => void;
@@ -96,8 +98,8 @@ export default function Home({ navigate }: HomeProps) {
   const termResult = isDark ? "#cbd5e1" : "#475569";
 
   const businesses = [
-    { id: "fashion", name: "E-Commerce of Fashion (Vastrra)", desc: "Fashion & Apparel", icon: "👗", color: "#ce93d8" },
-    { id: "electronics", name: "E-Commerce of Electronics (Electron)", desc: "Electronics & Gadgets", icon: "⚡", color: t.accentBlue },
+    { id: "fashion", name: "E-Commerce of Fashion (VELOURA)", desc: "Fashion & Apparel", logo: fashionLogo, color: "#ce93d8" },
+    { id: "electronics", name: "E-Commerce of Electronics (ELECTRON)", desc: "Electronics & Gadgets", logo: electroLogo, color: t.accentBlue },
   ];
 
   return (
@@ -189,7 +191,29 @@ export default function Home({ navigate }: HomeProps) {
                     transition: "border-color 0.3s, background-color 0.3s"
                   }}
                 >
-                  <span style={{ fontSize: "1.05rem" }}>{b.icon}</span>
+                  <div style={{
+                    width: 44,
+                    height: 44,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 8,
+                    background: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
+                    padding: 6,
+                    flexShrink: 0,
+                    overflow: "hidden"
+                  }}>
+                    <img
+                      src={b.logo}
+                      alt={b.name}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "100%",
+                        objectFit: "contain",
+                        filter: "none"
+                      }}
+                    />
+                  </div>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: "1.05rem", color: t.text, marginBottom: 2 }}>{b.name}</div>
                     <div style={{ fontSize: "0.85rem", color: t.textMuted }}>{b.desc}</div>
