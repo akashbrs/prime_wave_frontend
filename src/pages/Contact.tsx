@@ -100,47 +100,58 @@ export default function Contact() {
     setServerMessage("");
 
     try {
-      // 1. Save to Supabase (Database record)
-      console.log("Saving to Supabase...");
+      // 1. Save to Supabase
       const { error: dbError } = await supabase
         .from("contacts")
-        .insert([{
-          full_name: form.full_name,
-          email: form.email,
-          message: form.message
-        }]);
+        .insert([
+          {
+            full_name: form.full_name,
+            email: form.email,
+            message: form.message,
+          },
+        ]);
 
       if (dbError) throw new Error(`Database Error: ${dbError.message}`);
 
-      // 2. Trigger Confirmation Email via Django Backend
-      console.log("Sending confirmation email...");
-      const apiBaseUrl = "http://127.0.0.1:8005"; // Hardcoded for debugging
-      const emailRes = await fetch("https://prime-wave-backend-lmmk.onrender.com/api/contact/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
-      });
+      // 2. Send to Django Backend (FIXED)
+      const response = await fetch(
+        "https://prime-wave-backend-lmmk.onrender.com/api/contact/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: form.full_name,   // ✅ FIXED
+            email: form.email,
+            message: form.message,
+          }),
+        }
+      );
 
-      if (!emailRes.ok) {
-        const errorData = await emailRes.json().catch(() => ({}));
-        throw new Error(errorData.error || "Django server returned an error.");
-      } else {
-        setServerMessage("Message saved and confirmation email sent!");
+      // Handle response safely
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || "Server error occurred");
       }
 
+      // ✅ SUCCESS
       setStatus("success");
+      setServerMessage("Message sent successfully! ✅");
       setForm({ full_name: "", email: "", message: "" });
-      setTimeout(() => setStatus("idle"), 5000);
 
     } catch (err: any) {
       console.error("Error:", err);
-      // This will show us the EXACT error in your browser popup
-      alert(`Submission Error: ${err.message}`);
+
       setStatus("error");
-      setServerMessage(err.message || "Failed to process inquiry.");
-      setTimeout(() => setStatus("idle"), 5000);
+      setServerMessage(err.message || "Failed to send message ❌");
+
     }
+
+    setTimeout(() => setStatus("idle"), 5000);
   };
+
 
   const socials = [
     {
@@ -551,3 +562,4 @@ export default function Contact() {
     </div>
   );
 }
+
