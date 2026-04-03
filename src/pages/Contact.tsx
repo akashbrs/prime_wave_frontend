@@ -115,7 +115,7 @@ export default function Contact() {
       // 2. Trigger Confirmation Email via Django Backend
       console.log("Sending confirmation email...");
       const apiBaseUrl = "http://127.0.0.1:8005"; // Hardcoded for debugging
-      const emailRes = await fetch(`${apiBaseUrl}/api/contact/`, {
+      const emailRes = await fetch("https://prime-wave-backend-lmmk.onrender.com/api/contact/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
