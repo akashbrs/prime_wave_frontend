@@ -138,7 +138,7 @@ export default function Contact() {
 
       // ✅ SUCCESS
       setStatus("success");
-      setServerMessage("Message sent successfully! ✅");
+      setServerMessage("Message sent successfully!");
       setForm({ full_name: "", email: "", message: "" });
 
     } catch (err: any) {
