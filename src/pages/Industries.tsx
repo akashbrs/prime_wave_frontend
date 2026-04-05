@@ -45,7 +45,7 @@ const INDUSTRIES = [
     icon: "🛍",
     logo: fashionLogo,
     color: "#00e676",
-    url: "https://veloura-frontend.vercel.app",
+    url: "https://veloura-primewave.vercel.app",
     desc: "A stylish and high-converting e-commerce storefront for the Vastrra fashion brand.",
     bullets: ["Latest Fashion Trends", "Exclusive Collections", "Premium Quality Apparel"],
     footerLabel: "◆ VASTRRA FASHION",
