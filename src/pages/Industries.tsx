@@ -62,7 +62,7 @@ const INDUSTRIES = [
     icon: "⚡",
     logo: electroLogo,
     color: "#4fc3f7",
-    url: "https://electronics-frontend-zeta.vercel.app/",
+    url: "https://electron-primewave.vercel.app/",
     desc: "A robust digital storefront for consumer electronics.",
     bullets: ["Latest Gadgets & Devices", "Exclusive Tech Deals", "High-Performance Electronics"],
     footerLabel: "◆ ELECTRONIC PLATFORM",
