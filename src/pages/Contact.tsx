@@ -115,7 +115,7 @@ export default function Contact() {
 
       // 2. Send to Django Backend (FIXED)
       const response = await fetch(
-        "https://api.prime-wave.tech/api/contact/",
+        "http://localhost:8005/api/contact/",
         {
           method: "POST",
           headers: {
